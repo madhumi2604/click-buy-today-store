@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { toast } from 'sonner';
 import { 
   Trash2, 
   ShoppingBasket, 
@@ -18,12 +20,35 @@ import { Separator } from '../components/ui/separator';
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedDiscount, setAppliedDiscount] = useState(0);
   
   // Shipping calculation (fake)
   const shippingCost = cartTotal > 50 ? 0 : 9.99;
   const taxRate = 0.07; // 7% tax
-  const taxAmount = cartTotal * taxRate;
-  const orderTotal = cartTotal + shippingCost + taxAmount;
+  
+  // Calculate discounted total
+  const discountedTotal = appliedDiscount > 0 ? cartTotal * (1 - appliedDiscount) : cartTotal;
+  const taxAmount = discountedTotal * taxRate;
+  const orderTotal = discountedTotal + shippingCost + taxAmount;
+
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase() === 'WELCOME') {
+      setAppliedDiscount(0.1); // 10% discount
+      toast.success('Coupon applied successfully! 10% discount added.');
+    } else {
+      toast.error('Invalid coupon code.');
+      setAppliedDiscount(0);
+    }
+    setCouponCode('');
+  };
+  
+  const formatPrice = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR'
+    }).format(amount);
+  };
   
   if (cartItems.length === 0) {
     return (
@@ -105,12 +130,12 @@ const CartPage = () => {
                           <div className="mb-4">
                             {product.discount ? (
                               <div className="flex items-center">
-                                <span className="font-semibold text-shop-primary">${discountedPrice.toFixed(2)}</span>
-                                <span className="ml-2 text-sm text-gray-500 line-through">${product.price.toFixed(2)}</span>
+                                <span className="font-semibold text-shop-primary">{formatPrice(discountedPrice)}</span>
+                                <span className="ml-2 text-sm text-gray-500 line-through">{formatPrice(product.price)}</span>
                                 <span className="ml-2 text-sm text-red-500">Save {product.discount}%</span>
                               </div>
                             ) : (
-                              <span className="font-semibold text-shop-primary">${product.price.toFixed(2)}</span>
+                              <span className="font-semibold text-shop-primary">{formatPrice(product.price)}</span>
                             )}
                           </div>
                         </div>
@@ -135,7 +160,7 @@ const CartPage = () => {
                           </div>
                           
                           <div className="flex items-center gap-4">
-                            <span className="font-semibold text-shop-primary">${itemTotal.toFixed(2)}</span>
+                            <span className="font-semibold text-shop-primary">{formatPrice(itemTotal)}</span>
                             <button 
                               onClick={() => removeFromCart(product.id)}
                               className="text-gray-400 hover:text-red-500"
@@ -172,24 +197,30 @@ const CartPage = () => {
               <div className="space-y-3 text-sm mb-6">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice(cartTotal)}</span>
                 </div>
+                {appliedDiscount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount (10%)</span>
+                    <span>-{formatPrice(cartTotal * appliedDiscount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
                   <span className="font-medium">
-                    {shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}
+                    {shippingCost === 0 ? 'Free' : formatPrice(shippingCost)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tax (7%)</span>
-                  <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                  <span className="font-medium">{formatPrice(taxAmount)}</span>
                 </div>
                 
                 <Separator className="my-4" />
                 
                 <div className="flex justify-between text-lg">
                   <span className="font-semibold">Total</span>
-                  <span className="font-bold text-shop-primary">${orderTotal.toFixed(2)}</span>
+                  <span className="font-bold text-shop-primary">{formatPrice(orderTotal)}</span>
                 </div>
               </div>
               
@@ -208,7 +239,7 @@ const CartPage = () => {
                 </div>
                 <div className="flex items-start">
                   <Truck className="h-5 w-5 mr-2 text-shop-secondary flex-shrink-0" />
-                  <span>Free shipping on orders over $50</span>
+                  <span>Free shipping on orders over {formatPrice(50)}</span>
                 </div>
                 <div className="flex items-start">
                   <Clock className="h-5 w-5 mr-2 text-shop-secondary flex-shrink-0" />
@@ -219,13 +250,18 @@ const CartPage = () => {
             
             {/* Coupon Code */}
             <div className="p-6 bg-gray-50 border-t">
-              <div className="flex">
-                <input
+              <div className="flex gap-2">
+                <Input
                   type="text"
                   placeholder="Enter coupon code"
-                  className="flex-grow rounded-l-md px-4 py-2 border-r-0 focus:outline-none focus:ring-1 focus:ring-shop-secondary"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="flex-grow"
                 />
-                <Button className="rounded-l-none btn-primary">
+                <Button 
+                  className="btn-primary"
+                  onClick={handleApplyCoupon}
+                >
                   Apply
                 </Button>
               </div>
