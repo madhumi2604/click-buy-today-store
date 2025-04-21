@@ -29,7 +29,11 @@ const HomePage = () => {
                   </Button>
                 </Link>
                 <Link to="/deals">
-                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-shop-primary transition-all">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-white text-white bg-white/10 hover:bg-white hover:text-shop-primary transition-all"
+                  >
                     View Deals
                   </Button>
                 </Link>
