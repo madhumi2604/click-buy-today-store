@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronRight } from 'lucide-react';
@@ -14,7 +13,7 @@ const HomePage = () => {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-shop-primary to-shop-primary/80 text-white py-20">
+      <section className="bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white py-20">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0">
@@ -41,7 +40,7 @@ const HomePage = () => {
             </div>
             <div className="md:w-1/2 flex justify-center">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" 
+                src="https://images.unsplash.com/photo-1466442929976-97f336a657be?auto=format&fit=crop&w=800&q=80" 
                 alt="Featured Products" 
                 className="rounded-lg shadow-2xl max-w-full h-auto"
               />
@@ -51,7 +50,7 @@ const HomePage = () => {
       </section>
 
       {/* Featured Products Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-[#FEF7CD]/20">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-10">
             <h2 className="section-title">Featured Products</h2>
@@ -81,7 +80,7 @@ const HomePage = () => {
                 className="group relative overflow-hidden rounded-lg h-64 shadow-md transition-transform hover:shadow-lg hover:-translate-y-1"
               >
                 <img 
-                  src={`https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=600&q=80`} 
+                  src={`https://images.unsplash.com/photo-1469041797191-50ace28483c3?auto=format&fit=crop&w=600&q=80`} 
                   alt={category} 
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
@@ -99,7 +98,7 @@ const HomePage = () => {
       </section>
       
       {/* Special Offer Banner */}
-      <section className="py-12 bg-shop-secondary/10">
+      <section className="py-12 bg-[#FDE1D3]">
         <div className="container-custom">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="flex flex-col lg:flex-row">
@@ -121,7 +120,7 @@ const HomePage = () => {
               </div>
               <div className="lg:w-1/2">
                 <img 
-                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" 
+                  src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=800&q=80" 
                   alt="Electronics Sale" 
                   className="w-full h-full object-cover"
                 />
@@ -132,7 +131,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[#FFDEE2]/20">
         <div className="container-custom">
           <h2 className="section-title text-center mb-12">What Our Customers Say</h2>
           
@@ -169,7 +168,7 @@ const HomePage = () => {
       </section>
       
       {/* Newsletter */}
-      <section className="py-16 bg-shop-primary text-white">
+      <section className="py-16 bg-gradient-to-r from-[#8B5CF6] to-[#D946EF] text-white">
         <div className="container-custom text-center max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-4 text-white">Join Our Newsletter</h2>
           <p className="text-white/80 mb-8">
