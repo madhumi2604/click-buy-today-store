@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   ShoppingBag, 
@@ -18,11 +19,10 @@ import {
   X
 } from 'lucide-react';
 import { Separator } from '../components/ui/separator';
-import { useNavigate } from 'react-router-dom';
 import { useToast } from '../components/ui/use-toast';
 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -42,8 +42,8 @@ const ProfilePage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     navigate('/login');
   };
   
@@ -357,10 +357,10 @@ const ProfilePage = () => {
             <div className="p-6 border-b">
               <div className="flex items-center">
                 <div className="w-10 h-10 rounded-full bg-shop-secondary text-white flex items-center justify-center font-medium">
-                  {user?.name.charAt(0)}
+                  {user?.name?.charAt(0) || 'U'}
                 </div>
                 <div className="ml-3">
-                  <h2 className="font-medium text-shop-primary">{user?.name}</h2>
+                  <h2 className="font-medium text-shop-primary">{user?.name || 'User'}</h2>
                   <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
               </div>

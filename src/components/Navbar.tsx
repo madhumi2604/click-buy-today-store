@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
@@ -16,22 +15,27 @@ import {
 
 const Navbar = () => {
   const { cartCount } = useCart();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, signOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+    closeMenu();
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white border-b shadow-sm">
       <div className="container-custom py-3">
         <div className="flex items-center justify-between">
-          {/* Logo */}
           <Link to="/" className="flex items-center">
             <h1 className="text-2xl font-bold text-shop-primary">ShopStore</h1>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-shop-primary hover:text-shop-secondary transition-colors">
               Home
@@ -47,7 +51,6 @@ const Navbar = () => {
             </Link>
           </nav>
 
-          {/* Desktop Controls */}
           <div className="hidden md:flex items-center space-x-4">
             <Button variant="ghost" size="icon" className="text-shop-primary">
               <Search className="h-5 w-5" />
@@ -56,7 +59,6 @@ const Navbar = () => {
               <Heart className="h-5 w-5" />
             </Button>
             
-            {/* Cart Button */}
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative text-shop-primary">
                 <ShoppingCart className="h-5 w-5" />
@@ -68,7 +70,6 @@ const Navbar = () => {
               </Button>
             </Link>
 
-            {/* User Authentication */}
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -89,7 +90,7 @@ const Navbar = () => {
                     <Link to="/wishlist" className="cursor-pointer">Wishlist</Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -103,7 +104,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="flex items-center space-x-4 md:hidden">
             <Link to="/cart">
               <Button variant="ghost" size="icon" className="relative text-shop-primary">
@@ -122,7 +122,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMenuOpen && (
         <div className="md:hidden bg-white border-t py-4 px-6 shadow-lg animate-fade-in">
           <nav className="flex flex-col space-y-4">
@@ -143,7 +142,7 @@ const Navbar = () => {
               {isAuthenticated ? (
                 <>
                   <div className="mb-2 font-medium text-shop-primary">
-                    Hello, {user?.name}
+                    Hello, {user?.name || 'User'}
                   </div>
                   <div className="flex flex-col space-y-2">
                     <Link to="/profile" className="text-shop-primary hover:text-shop-secondary" onClick={closeMenu}>
@@ -155,7 +154,10 @@ const Navbar = () => {
                     <Link to="/wishlist" className="text-shop-primary hover:text-shop-secondary" onClick={closeMenu}>
                       Wishlist
                     </Link>
-                    <button onClick={() => { logout(); closeMenu(); }} className="text-left text-shop-primary hover:text-shop-secondary">
+                    <button 
+                      onClick={handleLogout} 
+                      className="text-left text-shop-primary hover:text-shop-secondary"
+                    >
                       Logout
                     </button>
                   </div>
