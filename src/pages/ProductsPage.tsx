@@ -11,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { getProducts, getCategories, Product } from '../data/products';
+import { getProducts, getCategories } from '../data/products';
+import { Product } from '../contexts/CartContext';
 import ProductCard from '../components/ProductCard';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 
@@ -25,11 +26,9 @@ const ProductsPage = () => {
   const [sortBy, setSortBy] = useState('featured');
   const [showFilters, setShowFilters] = useState(false);
   
-  // Effect to filter products when criteria change
   useEffect(() => {
     let result = [...allProducts];
     
-    // Filter by search term
     if (searchTerm) {
       result = result.filter(product => 
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -37,17 +36,14 @@ const ProductsPage = () => {
       );
     }
     
-    // Filter by categories
     if (selectedCategories.length > 0) {
       result = result.filter(product => selectedCategories.includes(product.category));
     }
     
-    // Filter by price range
     result = result.filter(product => 
       product.price >= priceRange[0] && product.price <= priceRange[1]
     );
     
-    // Sort products
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => a.price - b.price);
@@ -59,7 +55,6 @@ const ProductsPage = () => {
         result.sort((a, b) => b.rating - a.rating);
         break;
       default:
-        // For 'featured', keep original order
         break;
     }
     
@@ -85,9 +80,7 @@ const ProductsPage = () => {
     <div className="container-custom py-8">
       <h1 className="text-3xl font-bold mb-6 text-shop-primary">All Products</h1>
       
-      {/* Top controls: search, sort, filter toggle (mobile) */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
-        {/* Search bar */}
         <div className="relative flex-grow max-w-md">
           <Input
             type="text"
@@ -107,7 +100,6 @@ const ProductsPage = () => {
           )}
         </div>
         
-        {/* Sort by dropdown */}
         <div className="flex items-center space-x-2">
           <span className="text-sm font-medium">Sort:</span>
           <Select
@@ -126,7 +118,6 @@ const ProductsPage = () => {
           </Select>
         </div>
         
-        {/* Mobile filter toggle */}
         <Button 
           variant="outline" 
           className="md:hidden flex items-center"
@@ -143,7 +134,6 @@ const ProductsPage = () => {
       </div>
       
       <div className="flex flex-col md:flex-row gap-8">
-        {/* Filters sidebar */}
         <div className={`
           ${showFilters ? 'block' : 'hidden'} md:block 
           md:w-[250px] lg:w-[300px] flex-shrink-0 bg-white p-4 rounded-lg shadow-sm border
@@ -155,7 +145,6 @@ const ProductsPage = () => {
             </Button>
           </div>
           
-          {/* Categories */}
           <div className="py-4 border-t">
             <h3 className="text-md font-medium mb-3 text-shop-primary">Categories</h3>
             <div className="space-y-2">
@@ -177,7 +166,6 @@ const ProductsPage = () => {
             </div>
           </div>
           
-          {/* Price range */}
           <div className="py-4 border-t">
             <h3 className="text-md font-medium mb-3 text-shop-primary">Price Range</h3>
             <div className="px-2">
@@ -201,7 +189,6 @@ const ProductsPage = () => {
             </div>
           </div>
           
-          {/* Availability */}
           <div className="py-4 border-t">
             <h3 className="text-md font-medium mb-3 text-shop-primary">Availability</h3>
             <div className="space-y-2">
@@ -226,7 +213,6 @@ const ProductsPage = () => {
             </div>
           </div>
           
-          {/* Close filters button (mobile only) */}
           <Button 
             className="md:hidden w-full mt-4"
             onClick={() => setShowFilters(false)}
@@ -235,9 +221,7 @@ const ProductsPage = () => {
           </Button>
         </div>
         
-        {/* Product grid */}
         <div className="flex-1">
-          {/* Active filters chips */}
           {(selectedCategories.length > 0 || priceRange[0] > 0 || priceRange[1] < 2000) && (
             <div className="mb-4 flex flex-wrap gap-2">
               {selectedCategories.map((category, index) => (
@@ -274,7 +258,6 @@ const ProductsPage = () => {
             </div>
           )}
           
-          {/* Results count */}
           <p className="text-sm text-gray-500 mb-6">
             Showing {filteredProducts.length} of {allProducts.length} products
           </p>
