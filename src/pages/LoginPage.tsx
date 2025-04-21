@@ -5,21 +5,31 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
+    
     try {
       await signIn(email, password);
       navigate('/');
+    } catch (error: any) {
+      if (error.message.includes('email not confirmed')) {
+        setError('Please check your email inbox and verify your account before signing in.');
+      } else {
+        setError(error.message || 'Failed to sign in');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -29,6 +39,14 @@ const LoginPage = () => {
     <div className="container mx-auto max-w-md py-12">
       <div className="bg-white p-8 rounded-lg shadow-sm border">
         <h1 className="text-2xl font-bold mb-6">Sign In</h1>
+        
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
