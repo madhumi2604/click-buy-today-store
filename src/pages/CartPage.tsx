@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { Button } from '../components/ui/button';
 import { 
@@ -17,6 +17,7 @@ import { Separator } from '../components/ui/separator';
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const navigate = useNavigate();
   
   // Shipping calculation (fake)
   const shippingCost = cartTotal > 50 ? 0 : 9.99;
@@ -192,7 +193,11 @@ const CartPage = () => {
                 </div>
               </div>
               
-              <Button className="w-full btn-primary mb-4">
+              <Button 
+                className="w-full btn-primary mb-4"
+                onClick={() => navigate('/checkout')}
+                disabled={cartItems.length === 0}
+              >
                 Proceed to Checkout
               </Button>
               
